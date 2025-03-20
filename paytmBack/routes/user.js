@@ -1,12 +1,14 @@
-const userRouter = express.Router();
-const express = require("express");
+const { Router, json } = require("express");
+
+const userRouter = Router();
 const jwt = require("jsonwebtoken");
-const bycrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const { z } = require("zod");
 
 const { userSchema, User } = require("../db")
 
 const secret = process.env.JWT_SECRET;
+
 
 
 // const mongoose= require("mongoose");
@@ -24,7 +26,7 @@ userRouter.post("/signup", async function (req, res) {
     })
 
     const parsedBody = reqBody.safeParse(req.body);
-    console.log(parsedBody);
+    // console.log(parsedBody);
     const errMsg = parsedBody.error;
 
     if (!parsedBody.success) {
@@ -34,19 +36,19 @@ userRouter.post("/signup", async function (req, res) {
         return;
     }
 
-    const existingUser = User.findOne({
-        userName: body.userName
+    const existingUser = await User.findOne({
+        email: req.body.email
     })
 
-    if (existingUser.__id) {
-        res.json({
+    if (existingUser) {
+        return res.json({
             message: "User with this name already exists"
         })
     }
 
 
     const { email, password, firstName, lastName } = parsedBody.data;
-    const hashedPass = await bycrypt.hash(password, 7);
+    const hashedPass = await bcrypt.hash(password, 7);
 
     try {
         await userSchema.create({
@@ -56,8 +58,8 @@ userRouter.post("/signup", async function (req, res) {
             lastName
         })
     } catch (e) {
-        console.log(e);
-        res.sendStatus(500).json({
+        // console.log(e);
+        res.sendstatus(500).json({
             message: "An error occurred while creating the user"
         })
         return;
@@ -66,6 +68,36 @@ userRouter.post("/signup", async function (req, res) {
     res.json({
         message: "You have successfully signed-up"
     });
+
+});
+
+userRouter.post("/signin", async function (req, res) {
+    const { email, password } = req.body;
+
+    const signingUser = await User.findOne({
+        email: email
+    })
+
+    if (!signingUser) {
+        return res.sendStatus(403).json({
+            message: "User does Not exist."
+        });
+    }
+
+    const matchPass = await bcrypt.compare(password, signingUser.password);
+
+    if (matchPass) {
+        const token = jwt.sign({
+            id: signingUser._id
+        }, secret);
+        res.json({
+            token: token
+        });
+    } else {
+        res.sendStatus(403).json({
+            message: "Incorrect details"
+        });
+    }
 
 });
 

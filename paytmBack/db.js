@@ -5,10 +5,7 @@ const mongoose = require('mongoose');
 
 const mongoURI = process.env.MONGO_URI;
 
-mongoose.connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+mongoose.connect(mongoURI);
 
 // console.log(mongoURI);
 
@@ -41,7 +38,7 @@ const userSchema = mongoose.Schema({
     }
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("users", userSchema);
 
 module.exports = {
     User

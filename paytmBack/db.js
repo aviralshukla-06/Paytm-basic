@@ -1,7 +1,9 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const objId = mongoose.Types.ObjectId;
 
 const { type } = require('express/lib/response');
-const mongoose = require('mongoose');
 
 const mongoURI = process.env.MONGO_URI;
 
@@ -10,13 +12,13 @@ mongoose.connect(mongoURI);
 // console.log(mongoURI);
 
 const userSchema = mongoose.Schema({
-    usrename: {
+    email: {
         type: String,
         require: true,
         unique: true,
         trim: true,
         lowercase: true,
-        minLength: 3,
+        minLength: 10,
         maxLength: 30
     },
     password: {

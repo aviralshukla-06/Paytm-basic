@@ -1,11 +1,11 @@
 const { Router, json } = require("express");
-
+const userauth = require("../middlewares/usermid")
 const userRouter = Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { z } = require("zod");
 
-const { userSchema, User } = require("../db")
+const { User } = require("../db")
 
 const secret = process.env.JWT_SECRET;
 
@@ -21,8 +21,8 @@ userRouter.post("/signup", async function (req, res) {
     const reqBody = z.object({
         email: z.string().min(10).max(100).email(),
         password: z.string().min(5).max(100),
-        firstName: z.string().min(1).max(100),
-        lastName: z.string().min(5).max(100)
+        firstname: z.string().min(1).max(100),
+        lastname: z.string().min(5).max(100)
     })
 
     const parsedBody = reqBody.safeParse(req.body);
@@ -30,10 +30,9 @@ userRouter.post("/signup", async function (req, res) {
     const errMsg = parsedBody.error;
 
     if (!parsedBody.success) {
-        res.status(403).json({
-            message: errMsg
+        return res.status(403).json({
+            message: errMsg.issues
         })
-        return;
     }
 
     const existingUser = await User.findOne({
@@ -47,22 +46,24 @@ userRouter.post("/signup", async function (req, res) {
     }
 
 
-    const { email, password, firstName, lastName } = parsedBody.data;
+    const { email, password, firstname, lastname } = parsedBody.data;
     const hashedPass = await bcrypt.hash(password, 7);
 
     try {
-        await userSchema.create({
+        const newuser = await User.create({
             email,
             password: hashedPass,
-            firstName,
-            lastName
+            firstname,
+            lastname
         })
+
+        console.log(newuser);
     } catch (e) {
-        // console.log(e);
-        res.sendstatus(500).json({
+        console.log(e);
+        return res.status(500).json({
             message: "An error occurred while creating the user"
         })
-        return;
+
     }
 
     res.json({
@@ -79,7 +80,7 @@ userRouter.post("/signin", async function (req, res) {
     })
 
     if (!signingUser) {
-        return res.sendStatus(403).json({
+        return res.send(403).json({
             message: "User does Not exist."
         });
     }
@@ -94,12 +95,35 @@ userRouter.post("/signin", async function (req, res) {
             token: token
         });
     } else {
-        res.sendStatus(403).json({
+        res.send(403).json({
             message: "Incorrect details"
         });
     }
 
 });
+
+
+// user information updation
+// const updatedBody = z.object({
+//     password: z.string().optional(),
+//     firstName: z.string().optional(),
+//     lastName: z.string().optional(),
+// })
+
+
+// userRouter.put("/", userauth, async function (req, res) {
+//     const success = updatedBody.safeParse(req.body);
+
+//     if (!success) {
+//         return res.send(411).json({
+//             message: "Error while updating info."
+//         })
+//     }
+//     await user.updateOne(req.body, {
+//         id: req.userId
+//     })
+
+// })
 
 module.exports = userRouter;
 

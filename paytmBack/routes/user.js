@@ -104,26 +104,37 @@ userRouter.post("/signin", async function (req, res) {
 
 
 // user information updation
-// const updatedBody = z.object({
-//     password: z.string().optional(),
-//     firstName: z.string().optional(),
-//     lastName: z.string().optional(),
-// })
+const updatedBody = z.object({
+    password: z.string().optional(),
+    firstname: z.string().optional(),  // Ensure the field names match the schema
+    lastname: z.string().optional(),
+});
 
+userRouter.put("/update", userauth, async function (req, res) {
+    const success = updatedBody.safeParse(req.body);
 
-// userRouter.put("/", userauth, async function (req, res) {
-//     const success = updatedBody.safeParse(req.body);
+    if (!success.success) {
+        return res.status(411).json({
+            message: "Error while updating info."
+        });
+    }
 
-//     if (!success) {
-//         return res.send(411).json({
-//             message: "Error while updating info."
-//         })
-//     }
-//     await user.updateOne(req.body, {
-//         id: req.userId
-//     })
+    try {
+        const result = await User.updateOne(
+            { _id: req.userId },   // Filter: Find user by ID
+            { $set: req.body }     // Update: Modify provided fields
+        );
 
-// })
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: "No updates made. Check input values." });
+        }
+
+        res.json({ message: "User updated successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
 
 module.exports = userRouter;
 

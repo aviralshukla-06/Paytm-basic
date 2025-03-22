@@ -20,6 +20,7 @@ const secret = process.env.JWT_SECRET;
 userRouter.post("/signup", async function (req, res) {
     const reqBody = z.object({
         email: z.string().min(10).max(100).email(),
+        username: z.string().min(5).max(),
         password: z.string().min(5).max(100),
         firstname: z.string().min(1).max(100),
         lastname: z.string().min(5).max(100)
@@ -46,12 +47,13 @@ userRouter.post("/signup", async function (req, res) {
     }
 
 
-    const { email, password, firstname, lastname } = parsedBody.data;
+    const { email, username, password, firstname, lastname } = parsedBody.data;
     const hashedPass = await bcrypt.hash(password, 7);
 
     try {
         const newuser = await User.create({
             email,
+            username,
             password: hashedPass,
             firstname,
             lastname
@@ -106,6 +108,7 @@ userRouter.post("/signin", async function (req, res) {
 // user information updation
 const updatedBody = z.object({
     password: z.string().optional(),
+    username: z.string().optional(),
     firstname: z.string().optional(),  // Ensure the field names match the schema
     lastname: z.string().optional(),
 });
@@ -134,6 +137,35 @@ userRouter.put("/update", userauth, async function (req, res) {
         res.status(500).json({ message: "Server error", error });
     }
 });
+
+// get all users with given name
+
+userRouter.get("/bulk", async function (req, res) {
+    const filterStr = req.query.filterStr || "";
+
+    const foundUsers = await User.find({
+        $or: [{
+            firstname: {
+                "$regex": filter
+            }
+        }, {
+            lastname: {
+                "$regex": filter
+            }
+        }]
+
+    })
+
+    res.json({
+        user: foundUsers.map(user => ({
+            username: user.username,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            _id: user._id
+        }))
+    })
+
+})
 
 
 module.exports = userRouter;

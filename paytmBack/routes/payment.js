@@ -1,11 +1,18 @@
 const express = require("express");
 const userMiddleware = require("../middlewares/usermid");
 const { default: mongoose } = require("mongoose");
+const { Account } = require("../db");
 const paymentRouter = express.Router();
 
 // Define payment routes here
-paymentRouter.get("/checkBal", userMiddleware, (req, res) => {
+paymentRouter.get("/checkbal", userMiddleware, async (req, res) => {
+    const account = await Account.findOne({
+        userId: req.userId
+    });
 
+    res.json({
+        balance: account.balance
+    })
 });
 
 // console.log("working payment");

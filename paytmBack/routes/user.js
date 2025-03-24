@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { z } = require("zod");
 
-const { User } = require("../db")
+const { User, Account } = require("../db")
 
 const secret = process.env.JWT_SECRET;
 
@@ -57,6 +57,11 @@ userRouter.post("/signup", async function (req, res) {
             password: hashedPass,
             firstname,
             lastname
+        })
+
+        await Account.create({
+            userId: newuser._id,
+            balance: 1000
         })
 
         console.log(newuser);

@@ -10,7 +10,7 @@ app.use(cors());
 
 
 const mongoUrl = process.env.MONGO_URI;
-console.log(mongoUrl);
+// console.log(mongoUrl);
 
 const userRouter = require("./routes/user");
 
@@ -29,7 +29,7 @@ app.use("*", (req, res) => {
 
 async function main() {
     await mongo.connect(mongoUrl);
-    app.listen(3000);
+    app.listen(3000, () => console.log("✅ Server running on port 3000"));
 
     // add mongo path
 }

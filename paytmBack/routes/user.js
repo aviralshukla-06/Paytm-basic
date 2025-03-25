@@ -64,7 +64,7 @@ userRouter.post("/signup", async function (req, res) {
             balance: 1000
         })
 
-        console.log(newuser);
+        // console.log(newuser);
     } catch (e) {
         console.log(e);
         return res.status(500).json({

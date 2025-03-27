@@ -11,6 +11,7 @@ app.use(cors());
 
 const mongoUrl = process.env.MONGO_URI;
 // console.log(mongoUrl);
+// to debug whether env virable is working correctly
 
 const userRouter = require("./routes/user");
 

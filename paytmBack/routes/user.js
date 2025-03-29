@@ -149,7 +149,7 @@ userRouter.get("/bulk", async function (req, res) {
     const filterStr = req.query.filterStr || "";
 
     const foundUsers = await User.find({
-        $or: [{
+        $or: [{                                    // match both first and last name to filter, hence used "or"
             firstname: {
                 "$regex": filter
             }

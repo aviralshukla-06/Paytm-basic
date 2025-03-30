@@ -87,7 +87,7 @@ userRouter.post("/signin", async function (req, res) {
     })
 
     if (!signingUser) {
-        return res.send(403).json({
+        return res.status(403).json({
             message: "User does Not exist."
         });
     }
@@ -102,7 +102,7 @@ userRouter.post("/signin", async function (req, res) {
             token: token
         });
     } else {
-        res.send(403).json({
+        return res.status(403).json({
             message: "Incorrect details"
         });
     }

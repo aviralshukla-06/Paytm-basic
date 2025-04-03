@@ -20,10 +20,29 @@ paymentRouter.get("/checkbal", userMiddleware, async (req, res) => {
 paymentRouter.post("/transfer", userMiddleware, async function (req, res) {
     const session = await mongoose.startSession();
     // wrap all money transfer logic here
-
-
-
     session.startTransaction();
+
+    const { amount, to } = req.body;
+
+    const userAcc = await Account.findOne({ userId: req.userId }).session(session);
+
+    if (!userAcc || userAcc.balance < amount) {
+        await session.abortTransaction();
+        return res.status(400).json({
+            message: "Insufficient balance"
+        });
+    }
+
+    const toAccount = await Account.findOne({ userId: to }).session(session);
+
+    if (!toAccount) {
+        await session.abortTransaction();
+        return res.status(400).json({
+            message: "Invalid account"
+        });
+    }
+
+
     //transaction logic ends here
 })
 

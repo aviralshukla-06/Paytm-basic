@@ -21,7 +21,10 @@ paymentRouter.post("/transfer", userMiddleware, async function (req, res) {
     const session = await mongoose.startSession();
     // wrap all money transfer logic here
 
+
+
     session.startTransaction();
+    //transaction logic ends here
 })
 
 module.exports = paymentRouter;  // ✅ Make sure it's exported like this

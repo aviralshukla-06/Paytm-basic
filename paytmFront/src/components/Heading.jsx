@@ -5,3 +5,5 @@ export function Heading({ label }) {
         {label}
     </div>
 }
+
+// this is for heading updates in various pages

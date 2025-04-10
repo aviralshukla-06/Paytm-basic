@@ -1,5 +1,5 @@
 
-return function Inputbox({ label, placeholder }) {
+export function Inputbox({ label, placeholder, to }) {
     return <div>
         <div className="text-sm font-medium text-left py-2">
             {label}

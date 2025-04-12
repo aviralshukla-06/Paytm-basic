@@ -45,6 +45,7 @@ export const Signup = () => {
                                 lastname
                             });
                             console.log(response.data);
+                            // localStorage.setItem("token", response.data.token)
                         } catch (error) {
                             console.error("Axios error:", error.message);
                             if (error.response) {
@@ -55,7 +56,6 @@ export const Signup = () => {
                                 console.error("Axios setup error:", error.message);
                             }
                         }
-
                     }} label={"Sign up"} />
                 </div>
                 <Bottombar label={"Already have an account?"} buttonText={"Sign in"} to={"/signin"} />

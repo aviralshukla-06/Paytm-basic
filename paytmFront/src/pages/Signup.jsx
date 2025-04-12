@@ -1,10 +1,18 @@
+import { useState } from "react"
 import { Bottombar } from "../components/Bottombar"
 import { Button } from "../components/Button"
 import { Heading } from "../components/Heading"
 import { Inputbox } from "../components/Inputbox"
 import { SubHeading } from "../components/SubHeading"
+import { axios } from "axios"
 
 export const Signup = () => {
+
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [usernane, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
     return <div className="bg-slate-300 h-screen flex justify-center">
         <div className="flex flex-col justify-center">
             <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">

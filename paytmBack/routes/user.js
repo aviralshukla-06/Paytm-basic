@@ -19,11 +19,11 @@ const secret = process.env.JWT_SECRET;
 
 userRouter.post("/signup", async function (req, res) {
     const reqBody = z.object({
-        email: z.string().min(10).max(100).email(),
-        username: z.string().min(5).max(),
-        password: z.string().min(5).max(100),
-        firstname: z.string().min(1).max(100),
-        lastname: z.string().min(5).max(100)
+        email: z.string().email(),
+        username: z.string(),
+        password: z.string(),
+        firstname: z.string(),
+        lastname: z.string()
     })
 
     const parsedBody = reqBody.safeParse(req.body);

@@ -146,20 +146,18 @@ userRouter.put("/update", userauth, async function (req, res) {
 // get all users with given name
 
 userRouter.get("/bulk", async function (req, res) {
-    const filterStr = req.query.filterStr || "";
+    const filterStr = (req.query.filterStr || "").trim();
 
-    const foundUsers = await User.find({
-        $or: [{                                    // match both first and last name to filter, hence used "or"
-            firstname: {
-                "$regex": filterStr
-            }
-        }, {
-            lastname: {
-                "$regex": filterStr
-            }
-        }]
+    const filter = filterStr
+        ? {
+            $or: [
+                { firstname: { $regex: filterStr, $options: "i" } },
+                { lastname: { $regex: filterStr, $options: "i" } }
+            ]
+        }
+        : {}; // if no filter, return all
 
-    })
+    const foundUsers = await User.find(filter);
 
     res.json({
         user: foundUsers.map(user => ({
@@ -168,9 +166,8 @@ userRouter.get("/bulk", async function (req, res) {
             lastname: user.lastname,
             _id: user._id
         }))
-    })
-
-})
+    });
+});
 
 
 module.exports = userRouter;

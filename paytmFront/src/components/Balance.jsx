@@ -1,4 +1,4 @@
-export const Balance = ({ value }) => {
+const Balance = ({ value }) => {
     return <div className="flex">
         <div className="font-bold text-lg">
             Your balance
@@ -8,3 +8,5 @@ export const Balance = ({ value }) => {
         </div>
     </div>
 }
+
+export default Balance;

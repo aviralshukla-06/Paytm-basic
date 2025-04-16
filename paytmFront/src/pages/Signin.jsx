@@ -6,7 +6,7 @@ import { Button } from "../components/Button"
 import { Heading } from "../components/Heading"
 import { Inputbox } from "../components/Inputbox"
 import { SubHeading } from "../components/SubHeading"
-import axios from "axios"
+import axios from "axios";
 
 export const Signin = () => {
 

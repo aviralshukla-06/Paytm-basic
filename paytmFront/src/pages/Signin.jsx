@@ -6,10 +6,11 @@ import { Button } from "../components/Button"
 import { Heading } from "../components/Heading"
 import { Inputbox } from "../components/Inputbox"
 import { SubHeading } from "../components/SubHeading"
+import { useNavigate } from "react-router-dom"
 import axios from "axios";
 
 export const Signin = () => {
-
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 

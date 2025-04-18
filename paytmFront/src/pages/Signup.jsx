@@ -4,9 +4,13 @@ import { Button } from "../components/Button"
 import { Heading } from "../components/Heading"
 import { Inputbox } from "../components/Inputbox"
 import { SubHeading } from "../components/SubHeading"
+import { useNavigate } from "react-router-dom"
+
 import axios from "axios"
 
 export const Signup = () => {
+
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -44,7 +48,8 @@ export const Signup = () => {
                                 firstname,
                                 lastname
                             });
-                            console.log(response.data);
+                            // console.log(response.data);
+                            navigate("/signin")
                             // localStorage.setItem("token", response.data.token)
                         } catch (error) {
                             console.error("Axios error:", error.message);

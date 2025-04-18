@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const Balance = ({ value }) => {
+const Balance = ({ money }) => {
 
     const value = axios.get("http://localhost:3000/api/v1/user/")
 

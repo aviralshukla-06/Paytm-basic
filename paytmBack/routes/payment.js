@@ -61,5 +61,5 @@ paymentRouter.post("/transfer", userMiddleware, async function (req, res) {
     }
 });
 
-
+// export the module
 module.exports = paymentRouter;  // ✅ Make sure it's exported like this

@@ -1,11 +1,50 @@
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 
 
 export const Sendmoney = () => {
 
     const [searchParams] = useSearchParams();
-    const id = searchParams.get("id");
+    const userName = searchParams.get("username");
     const name = searchParams.get("name");
+    const [amount, setAmount] = useState(0);
+    const [balance, setBalance] = useState(null);
+    const navigate = useNavigate();
+    const [errorMsg, setErrorMsg] = useState("");
+
+    useEffect(() => {
+        const fetchBalance = async () => {
+            try {
+                const response = await axios.get("http://localhost:3000/api/v1/payment/checkbal", {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                setBalance(response.data.balance);
+            } catch (err) {
+                console.error("Error fetching balance:", err);
+                setBalance("Error");
+            }
+        };
+
+        fetchBalance();
+    }, []);
+
+    const handleAmountChange = (e) => {
+        const value = Number(e.target.value);
+        setAmount(value);
+
+        if (balance !== null && value > balance) {
+            setErrorMsg("Insufficient balance.");
+        } else {
+            setErrorMsg("");
+        }
+    };
+
+    // console.log(balance);
 
     return <div class="flex justify-center h-screen bg-gray-100">
         <div className="h-full flex flex-col justify-center">
@@ -31,15 +70,32 @@ export const Sendmoney = () => {
                                 Amount (in Rs)
                             </label>
                             <input
+                                onChange={handleAmountChange}
                                 type="number"
-                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                                 id="amount"
                                 placeholder="Enter amount"
                             />
+                            {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
                         </div>
-                        <button class="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
+
+
+                        <button onClick={() => {
+                            axios.post("http://localhost:3000/api/v1/payment/transfer", {
+                                amount,
+                                username: userName
+                            }, {
+                                headers: {
+                                    Authorization: "Bearer " + localStorage.getItem("token")
+                                }
+                            })
+
+                            navigate("/paymentcomplete");
+
+                        }} class="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
                             Initiate Transfer
                         </button>
+
                     </div>
                 </div>
             </div>

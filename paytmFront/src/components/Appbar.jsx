@@ -7,7 +7,7 @@ const Appbar = () => {
     const [firstName, setFirstName] = useState("")
 
     useEffect(() => {
-        axios.get("http://localhost:3000/api/v1/user/signin")
+        axios.get("http://localhost:3000/api/v1/user/dashboard")
             .then(response => {
 
                 setFirstName(response.data.firstname || "");

@@ -20,7 +20,7 @@ const secret = process.env.JWT_SECRET;
 userRouter.post("/signup", async function (req, res) {
     const reqBody = z.object({
         email: z.string().email(),
-        username: z.string(),
+        username: z.string().min(3).max(20),
         password: z.string(),
         firstname: z.string(),
         lastname: z.string()
@@ -112,10 +112,10 @@ userRouter.post("/signin", async function (req, res) {
 
 // user information updation
 const updatedBody = z.object({
-    password: z.string().optional(),
-    username: z.string().optional(),
-    firstname: z.string().optional(),  // Ensure the field names match the schema
-    lastname: z.string().optional(),
+    password: z.string(),
+    username: z.string(),
+    firstname: z.string(),  // Ensure the field names match the schema
+    lastname: z.string(),
 });
 
 userRouter.put("/update", userauth, async function (req, res) {

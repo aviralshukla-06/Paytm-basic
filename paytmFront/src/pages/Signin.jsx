@@ -33,7 +33,12 @@ export const Signin = () => {
                                 password,
                             });
                             console.log(response.data);
+
                             localStorage.setItem("token", response.data.token)
+
+                            navigate("/dashboard")
+
+
                         } catch (error) {
                             console.error("Axios error:", error.message);
                             if (error.response) {

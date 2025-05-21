@@ -1,2 +1,2 @@
 # Paytm-basic
-Paytm end to end basic version
+Paytm end-to-end basic version
